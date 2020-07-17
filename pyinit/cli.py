@@ -19,9 +19,13 @@ def main():
     tests.mkdir()
     package.joinpath("__init__.py").touch()
     tests.joinpath("__init__.py").touch()
+
     if readme == "markdown":
-        cwd.joinpath("README.md").touch()
+        readme_file = "README.md"
     else:
-        cwd.joinpath("README.rst").touch()
+        readme_file = "README.rst"
+
+    cwd.joinpath(readme_file).touch()
+
     cwd.joinpath("setup.py").write_text(
-        setup_template.render(readme, package_name, version, author, author_email, description, url))
+        setup_template.render(readme_file, package_name, version, author, author_email, description, url))
