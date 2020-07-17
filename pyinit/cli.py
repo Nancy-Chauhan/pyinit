@@ -24,4 +24,4 @@ def main():
     else:
         cwd.joinpath("README.rst").touch()
     cwd.joinpath("setup.py").write_text(
-        setup_template.template(readme, package_name, version, author, author_email, description, url))
+        setup_template.render(readme, package_name, version, author, author_email, description, url))

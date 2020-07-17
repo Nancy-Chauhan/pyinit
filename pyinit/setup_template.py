@@ -1,4 +1,4 @@
-def template(readme, package_name, version, author, author_email, description, url):
+def render(readme, package_name, version, author, author_email, description, url):
     return f"""import setuptools
 
 with open("{readme}", "r") as fh:
