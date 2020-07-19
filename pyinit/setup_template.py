@@ -5,7 +5,7 @@ with open("{readme}", "r") as fh:
    long_description = fh.read()
 
 setuptools.setup(
-   name="{package_name}", # Replace with your own username
+   name="{package_name}",
    version="{version}",
    author="{author}",
    author_email="{author_email}",
