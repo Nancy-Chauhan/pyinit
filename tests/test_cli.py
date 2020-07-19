@@ -1,6 +1,7 @@
 import os
 import tempfile
 from pathlib import Path
+from textwrap import dedent
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -59,26 +60,27 @@ class TestCli(TestCase):
             self.assertTrue(test_root.joinpath('__init__.py').is_file())
 
             actual_setup_py = setup_py.read_text()
-            expected_setup_py = f"""import setuptools
-
-with open("{readme_file_name}", "r") as fh:
-   long_description = fh.read()
-
-setuptools.setup(
-   name="foobar",
-   version="0.0.0",
-   author="{author_name}",
-   author_email="{author_email}",
-   description="{description}",
-   long_description=long_description,
-   long_description_content_type="text/markdown",
-   url="{project_url}",
-   packages=setuptools.find_packages(),
-   classifiers=[
-       "Programming Language :: Python :: 3",
-       "License :: OSI Approved :: MIT License",
-       "Operating System :: OS Independent",
-   ]
-)
-"""
+            expected_setup_py = dedent(f"""
+            import setuptools
+            
+            with open("{readme_file_name}", "r") as fh:
+               long_description = fh.read()
+            
+            setuptools.setup(
+               name="foobar",
+               version="0.0.0",
+               author="{author_name}",
+               author_email="{author_email}",
+               description="{description}",
+               long_description=long_description,
+               long_description_content_type="text/markdown",
+               url="{project_url}",
+               packages=setuptools.find_packages(),
+               classifiers=[
+                   "Programming Language :: Python :: 3",
+                   "License :: OSI Approved :: MIT License",
+                   "Operating System :: OS Independent",
+               ]
+            )
+            """.lstrip('\n'))
             self.assertEqual(expected_setup_py, actual_setup_py)
