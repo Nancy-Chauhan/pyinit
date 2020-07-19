@@ -7,36 +7,62 @@ from unittest.mock import patch
 
 from pyinit import cli
 
+package_name = "foobar"
+version = "0.0.0"
+author_name = "test"
+author_email = "test@example.com"
+description = "This is a sample package"
+project_url = "http://example.com"
+
+
+def create_mock_input(readme_type):
+    def mock_input(s):
+        if s == "Enter Python package name: ":
+            return package_name
+        elif s == "Enter Version number: ":
+            return version
+        elif s == "Enter author name: ":
+            return author_name
+        elif s == "Enter author email address: ":
+            return author_email
+        elif s == "Enter Description: ":
+            return description
+        elif s == "Enter Readme type ( markdown or rst ) : ":
+            return readme_type
+        elif s == "Enter Project URL: ":
+            return project_url
+
+    return mock_input
+
 
 class TestCli(TestCase):
+
     @patch('pyinit.cli.input')
-    def test_main_generates_project_with_markdown_readme(self, mock_input):
-        package_name = "foobar"
-        version = "0.0.0"
-        author_name = "test"
-        author_email = "test@example.com"
-        description = "This is a sample package"
-        project_url = "http://example.com"
-        readme_file_name = 'README.md'
+    def test_main_crates_package_with_markdown_readme(self, mock_input):
+        readme_file_name = "README.md"
+        mock_input.side_effect = create_mock_input(readme_type="markdown")
+        expected_readme = dedent(f"""
+                        # {package_name}
 
-        def input_side_effects(s):
-            if s == "Enter Python package name: ":
-                return package_name
-            elif s == "Enter Version number: ":
-                return version
-            elif s == "Enter author name: ":
-                return author_name
-            elif s == "Enter author email address: ":
-                return author_email
-            elif s == "Enter Description: ":
-                return description
-            elif s == "Enter Readme type ( markdown or rst ) : ":
-                return "markdown"
-            elif s == "Enter Project URL: ":
-                return project_url
+                        {description}
+                        """.lstrip('\n'))
+        self.assert_package_created(readme_file_name, expected_readme)
 
-        mock_input.side_effect = input_side_effects
+    @patch('pyinit.cli.input')
+    def test_main_crates_package_with_restructured_text_readme(self, mock_input):
+        readme_file_name = "README.rst"
+        mock_input.side_effect = create_mock_input(readme_type="rst")
+        expected_readme = dedent(f"""
+                        ######
+                        {package_name}
+                        ######
 
+                        {description}
+                        """.lstrip('\n'))
+
+        self.assert_package_created(readme_file_name, expected_readme)
+
+    def assert_package_created(self, readme_file_name, expected_readme):
         with tempfile.TemporaryDirectory() as cwd:
             os.chdir(cwd)
 
@@ -54,10 +80,11 @@ class TestCli(TestCase):
             self.assertTrue(module_root.is_dir())
             self.assertTrue(test_root.is_dir())
 
-            self.assertTrue(readme.is_file())
-
             self.assertTrue(module_root.joinpath('__init__.py').is_file())
             self.assertTrue(test_root.joinpath('__init__.py').is_file())
+
+            readme = readme.read_text()
+            self.assertEqual(expected_readme, readme)
 
             actual_setup_py = setup_py.read_text()
             expected_setup_py = dedent(f"""
