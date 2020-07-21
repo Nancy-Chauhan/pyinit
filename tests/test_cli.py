@@ -1,5 +1,7 @@
 import os
 import tempfile
+from pathlib import Path
+from textwrap import dedent
 from unittest import TestCase
 from unittest.mock import patch
 
@@ -7,24 +9,31 @@ from pyinit import cli
 
 
 class TestCli(TestCase):
-
     @patch('pyinit.cli.input')
-    def test_main(self, mock_input):
+    def test_main_generates_project_with_markdown_readme(self, mock_input):
+        package_name = "foobar"
+        version = "0.0.0"
+        author_name = "test"
+        author_email = "test@example.com"
+        description = "This is a sample package"
+        project_url = "http://example.com"
+        readme_file_name = 'README.md'
+
         def input_side_effects(s):
             if s == "Enter Python package name: ":
-                return "Test"
+                return package_name
             elif s == "Enter Version number: ":
-                return "0.0.0"
+                return version
             elif s == "Enter author name: ":
-                return "test"
+                return author_name
             elif s == "Enter author email address: ":
-                return "test@example.com"
+                return author_email
             elif s == "Enter Description: ":
-                return "This is test"
+                return description
             elif s == "Enter Readme type ( markdown or rst ) : ":
                 return "markdown"
             elif s == "Enter Project URL: ":
-                return "http://example.com"
+                return project_url
 
         mock_input.side_effect = input_side_effects
 
@@ -33,35 +42,45 @@ class TestCli(TestCase):
 
             cli.main()
 
-            os.path.isdir(cwd + "/tests")
-            os.path.isdir(cwd + "/Test")
-            os.path.isfile(cwd + "/Test/__init__.py")
-            os.path.isfile(cwd + "/tests/__init__.py")
-            os.path.isfile(cwd + "/README.md")
+            pkg_root = Path(cwd)
 
-            with open(cwd + "/setup.py") as file:
-                setup_py = file.read()
-                expected_output = """import setuptools
+            module_root = pkg_root.joinpath(package_name)
+            test_root = pkg_root.joinpath('tests')
+            readme = pkg_root.joinpath(readme_file_name)
+            setup_py = pkg_root.joinpath('setup.py')
 
-with open("README.md", "r") as fh:
-   long_description = fh.read()
+            self.assertTrue(pkg_root.is_dir())
 
-setuptools.setup(
-   name="Test", # Replace with your own username
-   version="0.0.0",
-   author="test",
-   author_email="test@example.com",
-   description="This is test",
-   long_description=long_description,
-   long_description_content_type="text/markdown",
-   url="http://example.com",
-   packages=setuptools.find_packages(),
-   classifiers=[
-       "Programming Language :: Python :: 3",
-       "License :: OSI Approved :: MIT License",
-       "Operating System :: OS Independent",
-   ]
-)
-"""
-                self.maxDiff = None
-                self.assertEqual(expected_output, setup_py)
+            self.assertTrue(module_root.is_dir())
+            self.assertTrue(test_root.is_dir())
+
+            self.assertTrue(readme.is_file())
+
+            self.assertTrue(module_root.joinpath('__init__.py').is_file())
+            self.assertTrue(test_root.joinpath('__init__.py').is_file())
+
+            actual_setup_py = setup_py.read_text()
+            expected_setup_py = dedent(f"""
+            import setuptools
+            
+            with open("{readme_file_name}", "r") as fh:
+               long_description = fh.read()
+            
+            setuptools.setup(
+               name="foobar",
+               version="0.0.0",
+               author="{author_name}",
+               author_email="{author_email}",
+               description="{description}",
+               long_description=long_description,
+               long_description_content_type="text/markdown",
+               url="{project_url}",
+               packages=setuptools.find_packages(),
+               classifiers=[
+                   "Programming Language :: Python :: 3",
+                   "License :: OSI Approved :: MIT License",
+                   "Operating System :: OS Independent",
+               ]
+            )
+            """.lstrip('\n'))
+            self.assertEqual(expected_setup_py, actual_setup_py)
