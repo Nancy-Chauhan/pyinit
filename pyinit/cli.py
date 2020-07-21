@@ -1,6 +1,7 @@
 import pathlib
 
 from pyinit import setup_template
+from pyinit.readme_template import render_md, render_rst
 
 
 def main():
@@ -22,10 +23,12 @@ def main():
 
     if readme == "markdown":
         readme_file = "README.md"
+        readme_text = render_md(package_name, description)
     else:
         readme_file = "README.rst"
+        readme_text = render_rst(package_name, description)
 
-    cwd.joinpath(readme_file).touch()
+    cwd.joinpath(readme_file).write_text(readme_text)
 
     cwd.joinpath("setup.py").write_text(
         setup_template.render(readme_file, package_name, version, author, author_email, description, url))
