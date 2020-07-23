@@ -6,6 +6,18 @@ def render_md(title, description):
     # {title}
     
     {description}
+
+    ## Installation
+
+    ### Requirements
+
+    - python 3.6 +
+
+    ## Usage
+
+    ## Developing
+
+    ### Requirements
     """.lstrip('\n'))
 
 

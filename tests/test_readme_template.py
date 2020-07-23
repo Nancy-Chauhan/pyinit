@@ -10,8 +10,20 @@ class Test(TestCase):
 
         expected = dedent("""
         # test
-        
+
         This is a description
+
+        ## Installation
+
+        ### Requirements
+
+        - python 3.6 +
+
+        ## Usage
+
+        ## Developing
+
+        ### Requirements
         """.lstrip('\n'))
         self.assertEqual(expected, readme)
 

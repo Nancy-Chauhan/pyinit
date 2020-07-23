@@ -45,6 +45,18 @@ class TestCli(TestCase):
                         # {package_name}
 
                         {description}
+
+                        ## Installation
+
+                        ### Requirements
+
+                        - python 3.6 +
+
+                        ## Usage
+
+                        ## Developing
+
+                        ### Requirements
                         """.lstrip('\n'))
         self.assert_package_created(readme_file_name, expected_readme)
 
