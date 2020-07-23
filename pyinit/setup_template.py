@@ -1,7 +1,7 @@
 from textwrap import dedent
 
 
-def render(readme, package_name, version, author, author_email, description, url):
+def render(readme, readme_mime_type, package_name, version, author, author_email, description, url):
     return dedent(f"""
     import setuptools
     
@@ -15,7 +15,7 @@ def render(readme, package_name, version, author, author_email, description, url
        author_email="{author_email}",
        description="{description}",
        long_description=long_description,
-       long_description_content_type="text/markdown",
+       long_description_content_type="{readme_mime_type}",
        url="{url}",
        packages=setuptools.find_packages(),
        classifiers=[

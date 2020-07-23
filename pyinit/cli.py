@@ -22,13 +22,16 @@ def main():
     tests.joinpath("__init__.py").touch()
 
     if readme == "markdown":
+        readme_mime_type = "text/markdown"
         readme_file = "README.md"
         readme_text = render_md(package_name, description)
     else:
+        readme_mime_type = "text/x-rst"
         readme_file = "README.rst"
         readme_text = render_rst(package_name, description)
 
     cwd.joinpath(readme_file).write_text(readme_text)
 
     cwd.joinpath("setup.py").write_text(
-        setup_template.render(readme_file, package_name, version, author, author_email, description, url))
+        setup_template.render(readme_file, readme_mime_type, package_name, version, author, author_email, description,
+                              url))

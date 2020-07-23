@@ -36,7 +36,7 @@ def create_mock_input(readme_type):
 
 
 class TestCli(TestCase):
-
+    maxDiff = None
     @patch('pyinit.cli.input')
     def test_main_crates_package_with_markdown_readme(self, mock_input):
         readme_file_name = "README.md"
@@ -58,7 +58,7 @@ class TestCli(TestCase):
 
                         ### Requirements
                         """.lstrip('\n'))
-        self.assert_package_created(readme_file_name, expected_readme)
+        self.assert_package_created(readme_file_name, expected_readme, "text/markdown")
 
     @patch('pyinit.cli.input')
     def test_main_crates_package_with_restructured_text_readme(self, mock_input):
@@ -87,9 +87,9 @@ class TestCli(TestCase):
                         ============
                         """.lstrip('\n'))
 
-        self.assert_package_created(readme_file_name, expected_readme)
+        self.assert_package_created(readme_file_name, expected_readme, "text/x-rst")
 
-    def assert_package_created(self, readme_file_name, expected_readme):
+    def assert_package_created(self, readme_file_name, expected_readme, readme_mime_type):
         with tempfile.TemporaryDirectory() as cwd:
             os.chdir(cwd)
 
@@ -127,7 +127,7 @@ class TestCli(TestCase):
                author_email="{author_email}",
                description="{description}",
                long_description=long_description,
-               long_description_content_type="text/markdown",
+               long_description_content_type="{readme_mime_type}",
                url="{project_url}",
                packages=setuptools.find_packages(),
                classifiers=[

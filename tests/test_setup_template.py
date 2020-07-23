@@ -7,9 +7,9 @@ from pyinit.setup_template import render
 class TestSetupTemplate(unittest.TestCase):
 
     def test_render_should_generate_setup_py(self):
-        actual_output = render(readme="README.md", package_name="Test", version="0.0.0", author="test",
-                               author_email="test@example.com",
-                               description="This is test", url="http://example.com")
+        actual_output = render(readme="README.md", readme_mime_type="text/markdown", version="0.0.0", author="test",
+                               author_email="test@example.com", description="This is test", url="http://example.com",
+                               package_name="Test")
         expected_output = dedent("""
         import setuptools
         
