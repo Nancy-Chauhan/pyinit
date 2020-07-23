@@ -29,4 +29,19 @@ def render_rst(title, description):
     {heading_sep}
     
     {description}
+
+    Installation
+    ************
+
+    Requirements
+    ============
+
+    Usage
+    *****
+
+    Developing
+    **********
+
+    Requirements
+    ============
     """.lstrip('\n'))

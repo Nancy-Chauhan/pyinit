@@ -70,6 +70,21 @@ class TestCli(TestCase):
                         ######
 
                         {description}
+
+                        Installation
+                        ************
+
+                        Requirements
+                        ============
+
+                        Usage
+                        *****
+
+                        Developing
+                        **********
+
+                        Requirements
+                        ============
                         """.lstrip('\n'))
 
         self.assert_package_created(readme_file_name, expected_readme)

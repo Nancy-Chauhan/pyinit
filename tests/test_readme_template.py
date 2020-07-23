@@ -34,7 +34,22 @@ class Test(TestCase):
         ####
         test
         ####
-        
+
         This is a description
+
+        Installation
+        ************
+
+        Requirements
+        ============
+
+        Usage
+        *****
+
+        Developing
+        **********
+
+        Requirements
+        ============
         """.lstrip('\n'))
         self.assertEqual(expected, readme)
